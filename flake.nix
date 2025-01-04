@@ -11,26 +11,34 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
-    configuration = { pkgs, ... }: {
+    configuration = { pkgs, lib, inputs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ 
           pkgs.vim
         ];
-      
+        
       nix.extraOptions = ''
         extra-platforms = x86_64-darwin aarch64-darwin
       '';
       # Auto upgrade nix package and the daemon service.
       services.nix-daemon.enable = true;
-      services.tailscale = {
-        enable = true;
+      services = { 
+        tailscale = {
+          enable = true;
+        };
       };
 
-      security.pam.enableSudoTouchIdAuth = true;
+      # Enable the darwin security.pam module for sudo Touch ID authentication.
+      security = { 
+        pam = {
+          enableSudoTouchIdAuth = true;
+        };
+      };
 
-      # nix.package = pkgs.nix;
+      # Enable the nix-darwin module system.
+      nix.package = pkgs.nix;
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -47,15 +55,26 @@
       system.configurationRevision = self.rev or self.dirtyRev or null;
 
       system.defaults = {
-        dock.autohide = true;
-        dock.mru-spaces = false;
-        finder.AppleShowAllExtensions = true;
-        finder.FXPreferredViewStyle = "clmv";
+        dock = {
+          autohide = true;
+          mru-spaces = false;
+        };
+        finder = {
+          AppleShowAllFiles = true;
+          AppleShowAllExtensions = true;
+          FXPreferredViewStyle = "clmv";
+        };
         loginwindow.LoginwindowText = "swaphb-mba";
         screencapture.location = "~/Pictures/screenshots";
         screensaver.askForPasswordDelay = 10;
+        trackpad = {
+          # Click = "click";
+          # DragLock = true;
+          # Dragging = true;
+          TrackpadThreeFingerDrag = true;
+          FirstClickThreshold = 1;
+        };
       };
-      system.defaults.trackpad.TrackpadThreeFingerDrag = true;
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 4;
@@ -86,7 +105,9 @@
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#swaphb-mba
     darwinConfigurations."swaphb-mba" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
+      modules = [ 
+        configuration
+         ];
     };
 
     # Expose the package set, including overlays, for convenience.
