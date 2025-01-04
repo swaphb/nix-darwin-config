@@ -5,11 +5,24 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    # home-manager.url = "github:nix-community/home-manager";
-    # home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    # Optional: Declarative tap management
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, ... }: 
   let
     configuration = { pkgs, lib, inputs, ... }: {
       # List packages installed in system profile. To search by name, run:
@@ -18,7 +31,7 @@
         [ 
           pkgs.vim
         ];
-        
+
       nix.extraOptions = ''
         extra-platforms = x86_64-darwin aarch64-darwin
       '';
@@ -28,7 +41,12 @@
         tailscale = {
           enable = true;
         };
+        spotifyd = {
+          enable = true;
+        };
       };
+
+      # homebrew.nix = true;
 
       # Enable the darwin security.pam module for sudo Touch ID authentication.
       security = { 
@@ -84,20 +102,6 @@
       nixpkgs.config = {
         allowUnfree = true;
         allowBroken = true;
-        # homebrew = {
-        #   enable = true;
-        #   packages = with pkgs; [
-        #     # homebrew packages
-        #     "1password-cli"
-        #     "1password"
-        #   ];
-        # };
-        # allowAliases = true;
-        # packageOverrides = pkgs: {
-        #   # Add a package to the set.
-        #   _1password-cli = pkgs.callPackage ./pkgs/1password-cli { };
-        #   _1password-gui = pkgs.callPackage ./pkgs/1password-gui { };
-        # };
       };
     };
   in
@@ -107,7 +111,22 @@
     darwinConfigurations."swaphb-mba" = nix-darwin.lib.darwinSystem {
       modules = [ 
         configuration
-         ];
+        nix-homebrew.darwinModules.nix-homebrew
+        {
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = true;
+            user = "stephen";
+            taps = {
+              "homebrew/homebrew-core" = homebrew-core;
+              "homebrew/homebrew-cask" = homebrew-cask;
+              "homebrew/homebrew-bundle" = homebrew-bundle;
+            };
+            autoMigrate = true;
+            mutableTaps = false;
+          };
+        }
+      ];
     };
 
     # Expose the package set, including overlays, for convenience.
