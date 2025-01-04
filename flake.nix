@@ -55,7 +55,7 @@
         screencapture.location = "~/Pictures/screenshots";
         screensaver.askForPasswordDelay = 10;
       };
-
+      system.defaults.trackpad.TrackpadThreeFingerDrag = true;
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 4;
