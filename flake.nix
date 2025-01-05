@@ -42,7 +42,7 @@
           enable = true;
         };
         spotifyd = {
-          enable = true;
+          enable = false;
         };
       };
 
