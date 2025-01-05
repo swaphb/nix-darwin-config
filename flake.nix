@@ -20,20 +20,47 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, ... }: 
+  outputs = inputs@{ self, nix-darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, home-manager, ... }: 
   let
     configuration = { pkgs, lib, inputs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
+
+      #####################
+      ### Nix Packages ###
+      #####################
       environment.systemPackages =
         [ 
           pkgs.vim
+          pkgs.lens
         ];
+      
+      ################
+      ### Homebrew ###
+      ################
+      homebrew = {
+        enable = true;
+        # onActivation.cleanup = "uninstall";
+    
+        taps = [];
+        brews = [ 
+          "cowsay" 
+          "git"
+          ];
+        casks = [];
+      };
 
+      ################
+      ### Nix-Darwin ###
+      ################
       nix.extraOptions = ''
-        extra-platforms = x86_64-darwin aarch64-darwin
+        experimental-features = nix-command flakes
       '';
       # Auto upgrade nix package and the daemon service.
       services.nix-daemon.enable = true;
@@ -104,6 +131,22 @@
         allowBroken = true;
       };
     };
+
+    homeconfig = {pkgs, lib, ...}: {
+      # this is internal compatibility configuration 
+      # for home-manager, don't change this!
+      home.stateVersion = "24.05";
+      # Let home-manager install and manage itself.
+      programs.home-manager.enable = true;
+
+      home.packages = with pkgs; [];
+
+      home.sessionVariables = {
+          EDITOR = "nano";
+      };
+
+      home.homeDirectory = lib.mkForce "/Users/stephen"; # Update this line
+    };
   in
   {
     # Build darwin flake using:
@@ -125,6 +168,13 @@
             autoMigrate = true;
             mutableTaps = false;
           };
+        }
+        home-manager.darwinModules.home-manager  
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.verbose = true;
+          home-manager.users.stephen = homeconfig;
         }
       ];
     };
