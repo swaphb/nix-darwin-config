@@ -42,13 +42,14 @@
           pkgs.vim
           pkgs.lens
           pkgs.vscode
-          pkgs._1password-gui
-          pkgs._1password-cli
           pkgs.spotify
           pkgs.slack
           pkgs.podman-desktop
           pkgs.kubectl
           pkgs.discord
+          pkgs._1password-cli
+          pkgs._1password-gui
+          pkgs.brave
         ];
       
       ################
@@ -64,6 +65,7 @@
           "git"
           "k9s"
           "helm"
+          "tfenv"
           ];
         casks = [];
       };
@@ -79,9 +81,6 @@
       services = { 
         tailscale = {
           enable = true;
-        };
-        spotifyd = {
-          enable = false;
         };
       };
 
@@ -156,7 +155,7 @@
       # Let home-manager install and manage itself.
       programs.home-manager.enable = true;
 
-      home.packages = with pkgs; [];
+      home.packages = with pkgs; [ ];
 
       home.sessionVariables = {
           EDITOR = "nano";
