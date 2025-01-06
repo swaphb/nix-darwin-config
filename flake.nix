@@ -28,6 +28,8 @@
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, home-manager, ... }: 
   let
+    username = "stephen";
+    hostname = "swaphb-mba";
     configuration = { pkgs, lib, inputs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
@@ -39,6 +41,13 @@
         [ 
           pkgs.vim
           pkgs.lens
+          pkgs.vscode
+          pkgs._1password-gui
+          pkgs._1password-cli
+          pkgs.spotify
+          pkgs.slack
+          pkgs.podman-desktop
+          pkgs.kubectl
         ];
       
       ################
@@ -52,6 +61,8 @@
         brews = [ 
           "cowsay" 
           "git"
+          "k9s"
+          "helm"
           ];
         casks = [];
       };
@@ -89,11 +100,21 @@
       nix.settings.experimental-features = "nix-command flakes";
 
       # Create /etc/zshrc that loads the nix-darwin environment.
-      programs.zsh.enable = true;  # default shell on catalina
+      programs = {
+        fish = {
+          enable = false;
+        };
+        zsh = {
+          enable = true;
+        };
+        # vscode = {
+        #   enable = true;
+        # };
+      };
       # programs.fish.enable = true;
       # Enable 1password plugins on interactive shell init
       programs.bash.interactiveShellInit = ''
-        source /home/stephen/.config/op/plugins.sh
+        source /home/${username}/.config/op/plugins.sh
       '';
 
       # Set Git commit hash for darwin-version.
@@ -109,7 +130,7 @@
           AppleShowAllExtensions = true;
           FXPreferredViewStyle = "clmv";
         };
-        loginwindow.LoginwindowText = "swaphb-mba";
+        loginwindow.LoginwindowText = "${hostname}";
         screencapture.location = "~/Pictures/screenshots";
         screensaver.askForPasswordDelay = 10;
         trackpad = {
@@ -132,7 +153,7 @@
       };
     };
 
-    homeconfig = {pkgs, lib, ...}: {
+    homeconfig = { pkgs, lib, ... }: {
       # this is internal compatibility configuration 
       # for home-manager, don't change this!
       home.stateVersion = "24.05";
@@ -145,13 +166,13 @@
           EDITOR = "nano";
       };
 
-      home.homeDirectory = lib.mkForce "/Users/stephen"; # Update this line
+      home.homeDirectory = lib.mkForce "/Users/${username}";
     };
   in
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#swaphb-mba
-    darwinConfigurations."swaphb-mba" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .#${hostname}
+    darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
       modules = [ 
         configuration
         nix-homebrew.darwinModules.nix-homebrew
@@ -159,7 +180,7 @@
           nix-homebrew = {
             enable = true;
             enableRosetta = true;
-            user = "stephen";
+            user = "${username}";
             taps = {
               "homebrew/homebrew-core" = homebrew-core;
               "homebrew/homebrew-cask" = homebrew-cask;
@@ -174,13 +195,12 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.verbose = true;
-          home-manager.users.stephen = homeconfig;
         }
       ];
     };
 
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."swaphb-mba".pkgs;
+    darwinPackages = self.darwinConfigurations."${hostname}".pkgs;
   };
 }
 
