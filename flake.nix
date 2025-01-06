@@ -48,6 +48,7 @@
           pkgs.slack
           pkgs.podman-desktop
           pkgs.kubectl
+          pkgs.discord
         ];
       
       ################
@@ -84,8 +85,6 @@
         };
       };
 
-      # homebrew.nix = true;
-
       # Enable the darwin security.pam module for sudo Touch ID authentication.
       security = { 
         pam = {
@@ -107,9 +106,6 @@
         zsh = {
           enable = true;
         };
-        # vscode = {
-        #   enable = true;
-        # };
       };
       # programs.fish.enable = true;
       # Enable 1password plugins on interactive shell init
@@ -186,8 +182,8 @@
               "homebrew/homebrew-cask" = homebrew-cask;
               "homebrew/homebrew-bundle" = homebrew-bundle;
             };
-            autoMigrate = true;
-            mutableTaps = false;
+            autoMigrate = true; # Automatically migrate from brewfile to flake if brew already exists.
+            mutableTaps = false; 
           };
         }
         home-manager.darwinModules.home-manager  
