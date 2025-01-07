@@ -44,12 +44,16 @@
           pkgs.vscode
           pkgs.spotify
           pkgs.slack
-          pkgs.podman-desktop
           pkgs.kubectl
           pkgs.discord
           pkgs._1password-cli
-          pkgs._1password-gui
           pkgs.brave
+          pkgs.teleport
+          pkgs.tenv
+          pkgs.google-cloud-sdk
+          pkgs.awscli
+          pkgs.azure-cli
+          pkgs.go
         ];
       
       ################
@@ -57,7 +61,7 @@
       ################
       homebrew = {
         enable = true;
-        # onActivation.cleanup = "uninstall";
+        onActivation.cleanup = "uninstall";
     
         taps = [];
         brews = [ 
@@ -65,9 +69,17 @@
           "git"
           "k9s"
           "helm"
-          "tfenv"
+          "podman"
+          "podman-compose"
           ];
-        casks = [];
+        casks = [
+          "1password"
+          "podman-desktop"
+          "teleport-connect"
+        ];
+        masApps = {
+          "1Password for Safari" = 1569813296;
+        };
       };
 
       ################
@@ -126,7 +138,7 @@
           FXPreferredViewStyle = "clmv";
         };
         loginwindow.LoginwindowText = "${hostname}";
-        screencapture.location = "~/Pictures/screenshots";
+        screencapture.location = "~/Documents/Pictures/screenshots";
         screensaver.askForPasswordDelay = 10;
         trackpad = {
           # Click = "click";
@@ -134,6 +146,9 @@
           # Dragging = true;
           TrackpadThreeFingerDrag = true;
           FirstClickThreshold = 1;
+        };
+        NSGlobalDomain = {
+          AppleInterfaceStyle = "Dark";
         };
       };
       # Used for backwards compatibility, please read the changelog before changing.
@@ -190,7 +205,35 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.verbose = true;
+          home-manager.users.${username} = {
+            imports = [ homeconfig ];
+            home.file = {
+              ".ssh/config".text = ''
+                Host *
+                  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+              '';
+
+              ".gitconfig".text = ''
+                [user]
+                  name = swaphb
+                  email = s@swaphb.com
+                  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJx0WMlfx+AwcROXFO+/all/WkLvBKpEkjwRY15tjSiB
+
+                [gpg]
+                  format = ssh
+
+                [gpg "ssh"]
+                  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+                [commit]
+                  gpgSign = true
+              '';
+            };
+          };
         }
+        # {
+        #   imports = [ ./modules/terminal/starship/default.nix ];
+        # }
       ];
     };
 
