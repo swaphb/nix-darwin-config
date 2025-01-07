@@ -54,6 +54,7 @@
           pkgs.awscli
           pkgs.azure-cli
           pkgs.go
+          pkgs.starship
         ];
       
       ################
