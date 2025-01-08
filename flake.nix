@@ -122,7 +122,6 @@
               programs.fish.enable = (userVars.userA.shell == "fish");
               imports = [
                 ./modules/home/${userVars.userA.username}/dotfiles.nix
-                ./modules/home/${userVars.userA.username}/appearance.nix
               ];
             };
           }
@@ -154,7 +153,6 @@
               programs.fish.enable = (userVars.userB.shell == "fish");
               imports = [
                 ./modules/home/${userVars.userB.username}/dotfiles.nix
-                ./modules/home/${userVars.userB.username}/appearance.nix
               ];
             };
           }

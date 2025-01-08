@@ -1,8 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, ... }:
 
-{
-  system.nixpkgsRelease = "unstable"; # Use the unstable channel for latest Nixpkgs. Stable packages update less frequently, for stable use "24.11"
-  
+{ 
   system.defaults.screencapture = {
     location = "~/Documents/Screenshots"; # Set default screenshot location
     # Add more screencapture settings here
@@ -16,7 +14,8 @@
   };
 
   system.keyboard = {
-    swapLeftCtrlAndFn = true;
+    swapLeftCtrlAndFn = true; # Swap left control and function keys
+    enableKeyMapping = true; # Enable key mapping
     # Set up your keyboard preferences here
   };
   # You can add more Mac defaults here as well...
