@@ -21,14 +21,11 @@
 
 system.defaults.NSGlobalDomain = {
     AppleInterfaceStyle = "Dark";     # "Dark" or "Light" - Darkmode all the things
-    AppleHighlightColor = "Purple";   # Set highlight color
     # Add more NSGlobalDomain settings here
   };
 
   system.defaults.loginwindow = {
     GuestEnabled = false; # Disable guest account
-    AdminHostInfo = "HostName"; # Show hostname on login window
-    AdminHostInfoTime = true; # Show time on login window
     LoginwindowText = "Super Awesome Mac"; # Set login window text
     # Add more loginwindow settings here
     };
