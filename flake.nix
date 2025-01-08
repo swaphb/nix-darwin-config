@@ -93,9 +93,7 @@
       nix-darwin.lib.darwinSystem {
         modules = [
           host1Base
-          ./modules/darwin/homebrew.nix
-          ./modules/darwin/services.nix
-          ./modules/darwin/nixpackages.nix
+          ./modules/darwin/default.nix
           inputs.nix-homebrew.darwinModules.nix-homebrew
           {
             nix-homebrew = {
@@ -124,6 +122,7 @@
               programs.fish.enable = (userVars.userA.shell == "fish");
               imports = [
                 ./modules/home/${userVars.userA.username}/dotfiles.nix
+                ./modules/home/${userVars.userA.username}/appearance.nix
               ];
             };
           }
@@ -155,6 +154,7 @@
               programs.fish.enable = (userVars.userB.shell == "fish");
               imports = [
                 ./modules/home/${userVars.userB.username}/dotfiles.nix
+                ./modules/home/${userVars.userB.username}/appearance.nix
               ];
             };
           }
