@@ -1,10 +1,16 @@
 {
-  description = "Example Darwin system flake";
+  description = "Example multi-host, multi-user Darwin system flake with hostVars/userVars, using let-bindings and strict commas";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
@@ -19,111 +25,140 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, ... }:
+  outputs = inputs@{ self, nix-darwin, home-manager, ... }:
     let
-      username = "stephen";
-      hostname = "swaphb-mba";
-
-      # Minimal Darwin system config (minus environment.systemPackages/services)
-      configuration = { pkgs, lib, inputs, ... }: {
-        # Some general Darwin/Nix configuration
-        nix.extraOptions = ''
-          experimental-features = nix-command flakes
-        '';
-
-        # This can stay here or move to modules/darwin/services.nix
-        # services.nix-daemon.enable = true;
-
-        # Enable the nix-darwin module system.
-        nix.package = pkgs.nix;
-
-        # Necessary for using flakes on this system.
-        nix.settings.experimental-features = "nix-command flakes";
-
-        # zsh, fish, etc.
-        programs.zsh.enable = true;
-        programs.bash.interactiveShellInit = ''
-          source /home/${username}/.config/op/plugins.sh
-        '';
-
-        system.configurationRevision = self.rev or self.dirtyRev or null;
-
-        system.defaults = {
-          # ...
+      ###################################
+      # 1. Host variables
+      ###################################
+      hostVars = {
+        host1 = {
+          hostname = "swaphb-mba";
+          arch = "aarch64-darwin";
         };
-
-        system.stateVersion = 4;
-        nixpkgs.hostPlatform = "aarch64-darwin";
-        nixpkgs.config = {
-          allowUnfree = true;
-          allowBroken = true;
+        host2 = {
+          hostname = "example";
+          arch = "aarch64-darwin";
         };
       };
 
-      # Minimal home-manager config (minus dotfiles)
-      homeconfig = { pkgs, lib, ... }: {
-        home.stateVersion = "24.05";
-        programs.home-manager.enable = true;
-
-        home.packages = with pkgs; [ ];
-        home.sessionVariables = {
-          EDITOR = "nano";
+      ###################################
+      # 2. User variables
+      ###################################
+      userVars = {
+        userA = {
+          username      = "stephen";
+          homeDirectory = "/Users/stephen";
+          shell         = "zsh";
         };
-        home.homeDirectory = lib.mkForce "/Users/${username}";
+        userB = {
+          username      = "example";
+          homeDirectory = "/Users/example";
+          shell         = "fish";
+        };
       };
+
+      ###################################
+      # 3. Base Darwin config function
+      ###################################
+      baseDarwinConfig = hostKey:
+        { config, pkgs, ... }:
+        {
+          nixpkgs.hostPlatform = hostVars.${hostKey}.arch;
+
+          nix.extraOptions = ''
+            experimental-features = nix-command flakes
+          '';
+          nix.package = pkgs.nix;
+          nix.settings.experimental-features = "nix-command flakes";
+
+          system.configurationRevision = self.rev or self.dirtyRev or null;
+
+          nixpkgs.config.allowUnfree = true;
+          nixpkgs.config.allowBroken = true;
+        };
     in
     {
-      darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
-        modules =
-          [
-            # Main Darwin config
-            configuration
-
-            # The official nix-homebrew module from your flake inputs
-            nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = true;
-                user = "${username}";
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-                };
-                autoMigrate = true;
-                mutableTaps = false;
+      ###################################
+      # 4. Host 1: swaphb-mba
+      ###################################
+      darwinConfigurations."${hostVars.host1.hostname}" = let
+        host1Base = baseDarwinConfig "host1";
+      in
+      nix-darwin.lib.darwinSystem {
+        modules = [
+          host1Base,
+          ./modules/darwin/homebrew.nix,
+          ./modules/darwin/services.nix,
+          ./modules/darwin/nixpackages.nix,
+          inputs.nix-homebrew.darwinModules.nix-homebrew,
+          {
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = true;
+              user = userVars.userA.username;
+              taps = {
+                "homebrew/homebrew-core"   = inputs.homebrew-core;
+                "homebrew/homebrew-cask"   = inputs.homebrew-cask;
+                "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               };
-            }
+              autoMigrate = true;
+              mutableTaps = false;
+            };
+          },
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.verbose = true;
 
-            # Our own modules for Darwin-level configs
-            ./modules/darwin/homebrew.nix
-            ./modules/darwin/nixpackages.nix
-            ./modules/darwin/services.nix
-
-            # Home Manager
-            home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.verbose = true;
-              home-manager.users.${username} = {
-                imports = [
-                  homeconfig
-                  ./modules/home/dotfiles.nix
-                ];
-              };
-            }
-          ];
+            home-manager.users.${userVars.userA.username} = {
+              home.homeDirectory = userVars.userA.homeDirectory;
+              programs.zsh.enable  = (userVars.userA.shell == "zsh");
+              programs.fish.enable = (userVars.userA.shell == "fish");
+              imports = [
+                ./modules/home/${userVars.userA.username}/dotfiles.nix
+              ];
+            };
+          }
+        ];
       };
 
-      darwinPackages = self.darwinConfigurations."${hostname}".pkgs;
-    };
+      ###################################
+      # 5. Host 2: example
+      ###################################
+      darwinConfigurations."${hostVars.host2.hostname}" = let
+        host2Base = baseDarwinConfig "host2";
+      in
+      nix-darwin.lib.darwinSystem {
+        modules = [
+          host2Base,
+          ./modules/darwin/homebrew.nix,
+          ./modules/darwin/services.nix,
+          ./modules/darwin/nixpackages.nix,
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.verbose = true;
+
+            home-manager.users.${userVars.userB.username} = {
+              home.homeDirectory = userVars.userB.homeDirectory;
+              programs.zsh.enable  = (userVars.userB.shell == "zsh");
+              programs.fish.enable = (userVars.userB.shell == "fish");
+              imports = [
+                ./modules/home/${userVars.userB.username}/dotfiles.nix
+              ];
+            };
+          }
+        ];
+      };
+
+      ###################################
+      # 6. (Optional) Expose packages
+      ###################################
+      darwinPackages = {
+        "${hostVars.host1.hostname}" = self.darwinConfigurations."${hostVars.host1.hostname}".pkgs;
+        "${hostVars.host2.hostname}" = self.darwinConfigurations."${hostVars.host2.hostname}".pkgs;
+      };
+    }
 }

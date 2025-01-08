@@ -21,6 +21,7 @@
       "teleport-connect"
       "utm"
       "localsend"
+      "joplin"
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
