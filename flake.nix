@@ -36,10 +36,12 @@
         host1 = {
           hostname = "swaphb-mba";
           arch = "aarch64-darwin";
+          homeDirectory = "/Users/stephen";
         };
         host2 = {
           hostname = "example";
           arch = "aarch64-darwin";
+          homeDirectory = "/Users/example";
         };
       };
 
@@ -67,6 +69,8 @@
         {
           nixpkgs.hostPlatform = hostVars.${hostKey}.arch;
 
+          system.stateVersion = 5;
+
           nix.extraOptions = ''
             experimental-features = nix-command flakes
           '';
@@ -88,11 +92,11 @@
       in
       nix-darwin.lib.darwinSystem {
         modules = [
-          host1Base,
-          ./modules/darwin/homebrew.nix,
-          ./modules/darwin/services.nix,
-          ./modules/darwin/nixpackages.nix,
-          inputs.nix-homebrew.darwinModules.nix-homebrew,
+          host1Base
+          ./modules/darwin/homebrew.nix
+          ./modules/darwin/services.nix
+          ./modules/darwin/nixpackages.nix
+          inputs.nix-homebrew.darwinModules.nix-homebrew
           {
             nix-homebrew = {
               enable = true;
@@ -106,14 +110,16 @@
               autoMigrate = true;
               mutableTaps = false;
             };
-          },
+          }
           home-manager.darwinModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.verbose = true;
 
-            home-manager.users.${userVars.userA.username} = {
-              home.homeDirectory = userVars.userA.homeDirectory;
+            home-manager.users.${userVars.userA.username} = { pkgs, lib, ... }:
+            {
+              home.stateVersion = "24.05";
+              home.homeDirectory = lib.mkForce (userVars.userA.homeDirectory);
               programs.zsh.enable  = (userVars.userA.shell == "zsh");
               programs.fish.enable = (userVars.userA.shell == "fish");
               imports = [
@@ -132,17 +138,19 @@
       in
       nix-darwin.lib.darwinSystem {
         modules = [
-          host2Base,
-          ./modules/darwin/homebrew.nix,
-          ./modules/darwin/services.nix,
-          ./modules/darwin/nixpackages.nix,
+          host2Base
+          ./modules/darwin/homebrew.nix
+          ./modules/darwin/services.nix
+          ./modules/darwin/nixpackages.nix
           home-manager.darwinModules.home-manager {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.verbose = true;
 
-            home-manager.users.${userVars.userB.username} = {
-              home.homeDirectory = userVars.userB.homeDirectory;
+            home-manager.users.${userVars.userB.username} = { pkgs, lib, ... }:
+            {
+              home.stateVersion = "24.05";
+              home.homeDirectory = lib.mkForce (userVars.userB.homeDirectory);
               programs.zsh.enable  = (userVars.userB.shell == "zsh");
               programs.fish.enable = (userVars.userB.shell == "fish");
               imports = [
@@ -160,5 +168,6 @@
         "${hostVars.host1.hostname}" = self.darwinConfigurations."${hostVars.host1.hostname}".pkgs;
         "${hostVars.host2.hostname}" = self.darwinConfigurations."${hostVars.host2.hostname}".pkgs;
       };
-    }
+    };
 }
+
