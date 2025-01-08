@@ -44,6 +44,51 @@ The flake configuration is designed to support multiple hosts and users with spe
 
 To add a new host or user, update the `hostVars` and `userVars` sections in the `flake.nix` file with the new configurations. Follow the existing structure to ensure consistency.
 
+## Example: Setting Variables in the Flake File
+
+In the `flake.nix` file, you can define host-specific and user-specific variables using let-bindings. Here is an example:
+
+```nix
+let
+  ###################################
+  # 1. Host variables
+  ###################################
+  hostVars = {
+    host1 = {
+      hostname = "swaphb-mba";
+      arch = "aarch64-darwin";
+      homeDirectory = "/Users/stephen";
+    };
+    host2 = {
+      hostname = "example";
+      arch = "aarch64-darwin";
+      homeDirectory = "/Users/example";
+    };
+  };
+
+  ###################################
+  # 2. User variables
+  ###################################
+  userVars = {
+    userA = {
+      username      = "stephen";
+      homeDirectory = "/Users/stephen";
+      shell         = "zsh";
+    };
+    userB = {
+      username      = "example";
+      homeDirectory = "/Users/example";
+      shell         = "fish";
+    };
+  };
+in
+{
+  // ...existing code...
+}
+```
+
+These variables can then be used throughout the flake configuration to customize settings for each host and user.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
