@@ -2,21 +2,22 @@
 
 {
   environment.systemPackages = with pkgs; [
-    vim
-    lens
-    vscode
-    spotify
-    slack
-    kubectl
-    discord
     _1password-cli
-    brave
-    teleport
-    tenv
-    google-cloud-sdk
     awscli
     azure-cli
+    brave
+    discord
     go
+    google-cloud-sdk
+    kubectl
+    krew
+    lens
+    slack
+    spotify
     starship
+    teleport
+    tenv
+    vim
+    vscode
   ];
 }
