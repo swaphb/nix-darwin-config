@@ -6,13 +6,19 @@
     orientation = "bottom";
     persistent-apps = [
       /Applications/Safari.app
-      /System/Applications/Utilities/Terminal.app
+      /Applications/Ghostty.app
+      "/${pkgs.vscode}/Applications/Visual Studio Code.app" # Use the nixpkgs path to the app for apps installed via nix. This will automatically use the latest nix store path.
+      "/${pkgs.lens}/Applications/Lens.app"
+      "/${pkgs.slack}/Applications/Slack.app"
+      "/${pkgs.discord}/Applications/Discord.app"
+      "/${pkgs.spotify}/Applications/Spotify.app"
+      "/Applications/joplin.app"
       # Add your persistent apps here
     ];
     persistent-others = [
-      # Add your persistent others here
-      "~/Documents"
       "~/code"
+      "~/Downloads"
+      # Add your persistent others here
     ];
     show-recents = false;
     tilesize = 36; # Set the icon size on the dock; default is 64
