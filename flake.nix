@@ -121,8 +121,7 @@
               programs.zsh.enable  = (userVars.userA.shell == "zsh");
               programs.fish.enable = (userVars.userA.shell == "fish");
               imports = [
-                ./modules/home/${userVars.userA.username}/dotfiles.nix
-                # ./modules/home/${userVars.userA.username}/default.nix
+                ./modules/home/${userVars.userA.username}/default.nix
               ];
             };
           }
