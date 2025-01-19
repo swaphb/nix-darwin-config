@@ -10,26 +10,27 @@
     brews = [
       "cowsay"
       "git"
-      "k9s"
       "helm"
+      "k9s"
       "podman"
       "podman-compose"
     ];
     casks = [
       "1password"
+      "ghostty"
+      "joplin"
+      "localsend"
+      "logi-options+"
       "podman-desktop"
       "teleport-connect"
       "utm"
-      "localsend"
-      "joplin"
-      "ghostty"
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
+      "tailscale" = 1475387142;
+      "Windows App" = 1295203466;
       "wireguard" = 1451685025;
       "wipr" = 1320666476;
-      "tailscale" = 1475387142;
-      "Windows App" =1295203466;
     };
   };
 }
