@@ -14,7 +14,7 @@
   };
 
   system.keyboard = {
-    swapLeftCtrlAndFn = true; # Swap left control and function keys
+    swapLeftCtrlAndFn = false; # Swap left control and function keys
     enableKeyMapping = true; # Enable key mapping
     # Set up your keyboard preferences here
   };

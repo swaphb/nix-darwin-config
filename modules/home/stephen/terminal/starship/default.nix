@@ -5,15 +5,22 @@
       add_newline = false;
       scan_timeout = 10;
       format = "$all";
+
       character = {
         success_symbol = "[>](bold green)";
         error_symbol = "[x](bold red)";
         vimcmd_symbol = "[<](bold green)";
       };
 
+      cmd_duration = {
+        min_time = 500;
+        format = "took [$duration](bold yellow)";
+      };
+
       git_commit = {
         tag_symbol = " tag ";
       };
+
       git_status = {
         ahead = ">";
         behind = "<";
@@ -21,16 +28,15 @@
         renamed = "r";
         deleted = "x";
       };
-      cmd_duration = {
-        min_time = 500;
-        format = "took [$duration](bold yellow)";
-      };
+
       aws = {
         symbol = "aws ";
       };
+
       azure = {
         symbol = "az ";
       };
+
       bun = {
         symbol = "bun ";
       };
@@ -38,41 +44,59 @@
       cmake = {
         symbol = "cmake ";
       };
+
       deno = {
         symbol = "deno ";
       };
+
       directory = {
         read_only = " ro";
       };
+
       docker_context = {
         symbol = "docker ";
       };
+
       git_branch = {
         symbol = "git ";
       };
+
       golang = {
         symbol = "go ";
       };
+
       hostname = {
         ssh_only = false;
         format = " on [$hostname](bold #FFA500)\n";
         disabled = false;
       };
+
       lua = {
         symbol = "lua ";
       };
+
       nodejs = {
         symbol = "nodejs ";
       };
+
       memory_usage = {
         symbol = "memory ";
       };
+
       nim = {
         symbol = "nim ";
       };
+
       nix_shell = {
         symbol = "nix ";
       };
+
+      os = {
+        format = "[$symbol]($style) "; # Display the OS symbol
+        disabled = false;             # Enable the OS module
+        style = "bold green";         # Style for the OS symbol
+      };
+
       os.symbols = {
         Alpaquita = "alq ";
         Alpine = "alp ";
@@ -93,7 +117,7 @@
         Illumos = "lum ";
         Linux = "lnx ";
         Mabox = "mbox ";
-        Macos = "mac ";
+        Macos = " ";
         Manjaro = "mjo ";
         Mariner = "mrn ";
         MidnightBSD = "mid ";
@@ -116,27 +140,35 @@
         Unknown = "unk ";
         Windows = "win ";
       };
+
       package = {
         symbol = "pkg ";
       };
+
       purescript = {
         symbol = "purs ";
       };
+
       python = {
         symbol = "py ";
       };
+
       rust = {
         symbol = "rs ";
       };
+
       status = {
         symbol = "[x](bold red) ";
       };
+
       sudo = {
         symbol = "sudo ";
       };
+
       terraform = {
         symbol = "terraform ";
       };
+
       username = {
         style_user = "blue bold";
         style_root = "orange bold";
@@ -144,6 +176,7 @@
         disabled = false;
         show_always = true;
       };
+
       zig = {
         symbol = "zig ";
       };
