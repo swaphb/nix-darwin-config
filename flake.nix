@@ -122,6 +122,7 @@
               programs.fish.enable = (userVars.userA.shell == "fish");
               imports = [
                 ./modules/home/${userVars.userA.username}/dotfiles.nix
+                # ./modules/home/${userVars.userA.username}/default.nix
               ];
             };
           }
