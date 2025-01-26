@@ -17,6 +17,7 @@
     ];
     casks = [
       "1password"
+      "cursor"
       "ghostty"
       "joplin"
       "localsend"
