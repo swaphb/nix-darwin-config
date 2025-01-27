@@ -8,7 +8,6 @@
 
     taps = [];
     brews = [
-      "cowsay"
       "git"
       "helm"
       "k9s"
@@ -18,6 +17,7 @@
     casks = [
       "1password"
       "cursor"
+      "firefox"
       "ghostty"
       "joplin"
       "localsend"
