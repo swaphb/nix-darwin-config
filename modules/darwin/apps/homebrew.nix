@@ -11,8 +11,6 @@
       "git"
       "helm"
       "k9s"
-      "podman"
-      "podman-compose"
     ];
     casks = [
       "1password"
@@ -22,7 +20,7 @@
       "joplin"
       "localsend"
       "logi-options+"
-      "podman-desktop"
+      "orbstack"
       "teleport-connect"
       "utm"
     ];
