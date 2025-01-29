@@ -92,6 +92,11 @@
       in
       nix-darwin.lib.darwinSystem {
         modules = [
+          ({ pkgs, ... }: {
+            _module.args = {
+              username = "${userVars.userA.username}";
+            };
+          })
           host1Base
           ./modules/darwin/default.nix
           inputs.nix-homebrew.darwinModules.nix-homebrew
