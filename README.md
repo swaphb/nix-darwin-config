@@ -55,16 +55,24 @@ After installing Nix, you can install nix-darwin (one recommended approach is fr
   - `<username>/terminal/`: Terminal-related configurations including shell setup
   - `<username>/terminal/starship/`: Starship prompt configurations
 
-## Scripts
+## Management Script
 
-- **rebuild.sh**: A convenience script that rebuilds and switches to the new configuration:
-  ```sh
-  darwin-rebuild switch --flake .#<hostname>
-  ```
-- **update.sh**: Updates flake inputs and rebuilds the configuration:
-  ```sh
-  nix flake update && ./rebuild.sh
-  ```
+The repository includes an interactive management script (`manage.sh`) that provides a unified interface for common tasks:
+
+```sh
+./manage.sh
+```
+
+The script offers the following options:
+
+1. **Rebuild configuration**: Rebuilds the current configuration
+2. **Update flakes and rebuild**: Updates all flake inputs and rebuilds
+3. **Clean nix store**: Runs garbage collection on the Nix store
+4. **Exit**: Exits the script
+
+For rebuild operations (options 1 and 2), the script will:
+- Prompt for the hostname (defaults to "swaphb-mba" if not specified)
+- Execute the appropriate commands
 
 ## How to Use
 
@@ -85,30 +93,13 @@ After installing Nix, you can install nix-darwin (one recommended approach is fr
 
 4. **Apply Configuration**:
     ```sh
-    nix build .#darwinConfigurations.<hostname>.system
-    ./result/sw/bin/darwin-rebuild switch --flake .
+    ./manage.sh
     ```
-    Replace `<hostname>` with your system's hostname as defined in `flake.nix`.
-
-## Building and Switching
-
-To apply changes to your configuration:
-
-```sh
-./rebuild.sh
-```
-
-Or manually:
-```sh
-darwin-rebuild switch --flake .#<hostname>
-```
-
-To update flake inputs and rebuild:
-```sh
-./update.sh
-```
+    Select option 1 to rebuild the configuration, and enter your hostname when prompted.
 
 ## Common Commands
+
+All common commands are now available through the management script (`./manage.sh`). However, you can still run commands manually if needed:
 
 - **Build without switching**:
     ```sh
@@ -123,11 +114,6 @@ To update flake inputs and rebuild:
 - **List available flake outputs**:
     ```sh
     nix flake show
-    ```
-
-- **Update upstream flakes**:
-    ```sh
-    nix flake update
     ```
 
 ## Troubleshooting
