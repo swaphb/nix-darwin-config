@@ -7,7 +7,7 @@
   home = {
     packages = with pkgs; [
       _1password-cli
-      awscli
+      awscli2
       azure-cli
       brave
       discord
