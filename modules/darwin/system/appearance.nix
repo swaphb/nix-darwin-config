@@ -8,10 +8,10 @@ in
     autohide = true;
     orientation = "bottom";
     persistent-apps = [
-      /Applications/Safari.app
+      "/Applications/Zen Browser.app"
       /Applications/Ghostty.app
       "/Applications/Cursor.app"
-      "/${pkgs.vscode}/Applications/Visual Studio Code.app" # Use the nixpkgs path to the app for apps installed via nix. This will automatically use the latest nix store path.
+      # Use the nixpkgs path to the app for apps installed via nix. This will automatically use the latest nix store path.
       "/${pkgs.lens}/Applications/Lens.app"
       "/${pkgs.slack}/Applications/Slack.app"
       "/${pkgs.discord}/Applications/Discord.app"
