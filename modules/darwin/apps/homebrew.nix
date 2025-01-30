@@ -15,6 +15,7 @@
     casks = [
       "1password"
       "cursor"
+      "elgato-wave-link"
       "firefox"
       "ghostty"
       "joplin"
@@ -23,6 +24,7 @@
       "orbstack"
       "teleport-connect"
       "utm"
+      "zen-browser"
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
