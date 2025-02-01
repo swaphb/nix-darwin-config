@@ -55,6 +55,7 @@
     # Configure zsh
     ".zshrc".text = ''
       eval "$(starship init zsh)"
+      export PATH="''${KREW_ROOT:-/Users/${config.home.username}/.krew}/bin:$PATH"
     '';
 
     # Configure ghostty
