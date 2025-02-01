@@ -16,6 +16,7 @@
       kubectl
       krew
       lens
+      ollama
       slack
       spotify
       teleport
