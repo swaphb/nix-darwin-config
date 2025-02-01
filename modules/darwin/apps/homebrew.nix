@@ -6,8 +6,8 @@
     enable = true;
     onActivation.cleanup = "uninstall";
 
-    taps = [];
     brews = [
+      "argoproj/homebrew-tap/kubectl-argo-rollouts"
       "git"
       "helm"
       "k9s"

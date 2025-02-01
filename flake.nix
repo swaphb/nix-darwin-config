@@ -25,6 +25,10 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+    homebrew-argoproj = {
+      url = "github:argoproj/homebrew-tap";
+      flake = false;
+    };
   };
 
   outputs = inputs@{ self, nix-darwin, home-manager, ... }:
@@ -109,9 +113,10 @@
                 "homebrew/homebrew-core"   = inputs.homebrew-core;
                 "homebrew/homebrew-cask"   = inputs.homebrew-cask;
                 "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+                "argoproj/homebrew-tap"    = inputs.homebrew-argoproj;
               };
               autoMigrate = true;
-              mutableTaps = false;
+              mutableTaps = true;
             };
           }
           home-manager.darwinModules.home-manager {
