@@ -22,6 +22,7 @@ in
     persistent-others = [
       "${homeDirectory}/code"
       "${homeDirectory}/Downloads"
+      "${homeDirectory}/Applications/Home Manager Apps"
       # Add your persistent others here
     ];
     show-recents = false;
