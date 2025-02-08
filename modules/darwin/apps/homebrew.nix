@@ -11,6 +11,7 @@
       "git"
       "helm"
       "k9s"
+      "ansible"
     ];
     casks = [
       "1password"
@@ -28,6 +29,7 @@
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
+      "pairvpn" = 1347012179;
       "tailscale" = 1475387142;
       "Windows App" = 1295203466;
       "wireguard" = 1451685025;
