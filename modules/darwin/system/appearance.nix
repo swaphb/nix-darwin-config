@@ -9,6 +9,7 @@ in
     orientation = "bottom";
     persistent-apps = [
       "/Applications/Zen Browser.app"
+      "/Applications/Vivaldi.app"
       /Applications/Ghostty.app
       "/Applications/Cursor.app"
       # Use the nixpkgs path to the app for apps installed via nix. This will automatically use the latest nix store path.

@@ -8,6 +8,7 @@
 
     brews = [
       "argoproj/homebrew-tap/kubectl-argo-rollouts"
+      "gh"
       "git"
       "helm"
       "k9s"
@@ -17,7 +18,6 @@
       "1password"
       "cursor"
       "elgato-wave-link"
-      "firefox"
       "ghostty"
       "joplin"
       "localsend"
@@ -25,6 +25,7 @@
       "orbstack"
       "teleport-connect"
       "utm"
+      "vivaldi"
       "zen-browser"
     ];
     masApps = {
