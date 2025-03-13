@@ -93,7 +93,7 @@ For rebuild operations (options 1 and 2), the script will:
 
 4. **Apply Configuration**:
     ```sh
-    ./manage.sh
+    nix run nix-darwin --extra-experimental-features nix-command --extra-experimental-features flakes -- switch --flake .#swaphb-mba
     ```
     Select option 1 to rebuild the configuration, and enter your hostname when prompted.
 

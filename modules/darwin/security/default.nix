@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   # Enable TouchID for PAM auth: you could also place security/pam or other service configs here:
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   system.defaults.alf = {
     allowsignedenabled = 1; # Allows any signed Application to accept incoming requests. Default is true. 0 = disabled 1 = enabled
